@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            <script src="http://d3js.org/d3.v3.min.js"></script>
+            <link rel="stylesheet" href="{{ asset('css/d3_tree.css') }}">
+            <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+            <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/font-awesome.min.css') }}">{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        <div class="alert alert-success" id="result_message_success" style="display: none"></div>
+        <div class="alert alert-danger" id="result_message_danger" style="display: none"></div>
+        {% for msg in app.session.flashBag.get('success') %}
+            <div class="alert alert-success" id="result_message">
+                {{ msg }}
+            </div>
+        {% endfor %}
+        {% block body %}{% endblock %}
+        {% block javascripts %}
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        {% endblock %}
+    </body>
+</html>

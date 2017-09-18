@@ -1,0 +1,58 @@
+{% extends ':admin/base:list.html.twig' %}
+
+{% block path %}{{ path('admin_category_new') }}{% endblock %}
+{% block header %}Category{% endblock %}
+
+{% block table %}
+
+<table class="table table-striped">
+    <tr>
+        <th>Category</th>
+        <th>Status</th>
+        <th>Buttons</th>
+    </tr>
+    {% for category in categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+            {% if  category.status == 1 %}
+                <td>Active</td>
+            {% else %}
+                <td>Passive</td>
+            {% endif %}
+            <td><a href="{{ path('admin_category_edit', {'id': category.id}) }}" class="btn btn-xs btn-success"><span class="fa fa-pencil"></span></a>
+                <a href="javascript:void(0)" class="btn btn-xs btn-success" onclick="deleteCategory('{{ category.id }}','{{ category.name}}')"><span class="fa fa-trash-o" ></span></a></td>
+        </tr>
+
+
+        <script type="text/javascript">
+            function deleteCategory(categoryId, categoryName) {
+                if (confirm("Are you sure that you want to delete '" + categoryName + "' titled entry?") == true) {
+                    jQuery.ajax({
+                        method: "POST",
+                        url: '/admin/category/delete/'+categoryId,
+                        dataType: "json",
+                        success: function (responseData) {
+                            jQuery("#result_message").hide();
+                            if (responseData.success == true) {
+                                jQuery("#result_message_success").html("<span>" + responseData.message + "<span>");
+                                jQuery("#result_message_success").show();
+                                setTimeout(function () {
+                                    jQuery("#result_message_success").hide("slow");
+                                }, 3000);
+                                jQuery("#category_" + categoryId).hide("slow");
+                            } else {
+                                jQuery("#result_message_danger").html("<span>" + responseData.message + "<span>");
+                                jQuery("#result_message_danger").show();
+                                setTimeout(function () {
+                                    jQuery("#result_message").hide("slow");
+                                }, 3000);
+                            }
+                        }
+                    })
+                }
+            }
+        </script>
+    {% endfor %}
+</table>
+
+{% endblock %}

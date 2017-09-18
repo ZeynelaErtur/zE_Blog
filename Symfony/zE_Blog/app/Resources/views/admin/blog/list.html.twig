@@ -1,0 +1,58 @@
+{% extends ':admin/base:list.html.twig' %}
+
+{% block path %}{{ path('admin_blog_new') }}{% endblock %}
+{% block header %}Blogs{% endblock %}
+
+{% block table %}
+
+<table class="table table-striped">
+    <tr>
+        <th>Blog</th>
+        <th>Status</th>
+        <th>Buttons</th>
+    </tr>
+    {% for blog in blogs %}
+        <tr>
+            <td>{{ blog.title }}</td>
+            {% if  blog.status == 1 %}
+                <td>Active</td>
+            {% else %}
+                <td>Passive</td>
+            {% endif %}
+            <td><a href="{{ path('admin_blog_edit', {'id': blog.id}) }}" class="btn btn-xs btn-success"><span class="fa fa-pencil"></span></a>
+                <a href="javascript:void(0)" class="btn btn-xs btn-success" onclick="deleteBlog('{{ blog.id }}','{{ blog.title }}')"><span class="fa fa-trash-o" ></span></a></td>
+        </tr>
+
+
+        <script type="text/javascript">
+            function deleteBlog(blogId, blogTitle) {
+                if (confirm("Are you sure that you want to delete '" + blogTitle + "' titled entry?") == true) {
+                    jQuery.ajax({
+                        method: "POST",
+                        url: '/admin/blog/delete/'+blogId,
+                        dataType: "json",
+                        success: function (responseData) {
+                            jQuery("#result_message").hide();
+                            if (responseData.success == true) {
+                                jQuery("#result_message_success").html("<span>" + responseData.message + "<span>");
+                                jQuery("#result_message_success").show();
+                                setTimeout(function () {
+                                    jQuery("#result_message_success").hide("slow");
+                                }, 3000);
+                                jQuery("#blog_" + blogId).hide("slow");
+                            } else {
+                                jQuery("#result_message_danger").html("<span>" + responseData.message + "<span>");
+                                jQuery("#result_message_danger").show();
+                                setTimeout(function () {
+                                    jQuery("#result_message").hide("slow");
+                                }, 3000);
+                            }
+                        }
+                    })
+                }
+            }
+        </script>
+    {% endfor %}
+</table>
+
+{% endblock %}
